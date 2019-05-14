@@ -2127,8 +2127,8 @@ public class Request implements HttpServletRequest
         AsyncContextEvent event = new AsyncContextEvent(_context, _async, state, this, servletRequest, servletResponse);
         event.setDispatchContext(getServletContext());
 
-        String uri = ((HttpServletRequest)servletRequest).getRequestURI();
-        if (_contextPath != null && uri.startsWith(_contextPath))
+        String uri = getRequestURI(servletRequest);
+        if (_contextPath!=null && uri.startsWith(_contextPath))
             uri = uri.substring(_contextPath.length());
         else
             // TODO probably need to strip encoded context from requestURI, but will do this for now:
@@ -2137,6 +2137,13 @@ public class Request implements HttpServletRequest
         event.setDispatchPath(uri);
         state.startAsync(event);
         return _async;
+    }
+
+    protected String getRequestURI(ServletRequest servletRequest){
+        if(servletRequest instanceof ServletRequestWrapper){
+            return ((HttpServletRequest)((ServletRequestWrapper)servletRequest).getRequest()).getRequestURI();
+        }
+        return ((HttpServletRequest)servletRequest).getRequestURI();
     }
 
     @Override
