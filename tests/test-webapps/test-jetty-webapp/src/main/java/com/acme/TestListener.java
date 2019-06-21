@@ -32,6 +32,7 @@ import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.ServletRequestAttributeListener;
@@ -140,6 +141,17 @@ public class TestListener implements HttpSessionListener,  HttpSessionAttributeL
                 EnumSet.of(DispatcherType.ERROR,DispatcherType.ASYNC,DispatcherType.FORWARD,DispatcherType.INCLUDE,DispatcherType.REQUEST),
                 true, 
                 new String[]{"/*"});
+
+        try
+        {
+            AddListServletRequestListener listenerClass =
+                sce.getServletContext().createListener( AddListServletRequestListener.class );
+            sce.getServletContext().addListener( listenerClass );
+        }
+        catch ( ServletException e )
+        {
+            throw new RuntimeException( e.getMessage(), e );
+        }
     }
 
     @Override
